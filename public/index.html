@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Thư viện</title>
+    <script src="assets/js/api.js"></script>
+    <script>
+        (async function () {
+            if (!sessionStorage.getItem('token')) {
+                window.location.replace('login.html');
+                return;
+            }
+            try {
+                const res = await apiFetch('/auth/me');
+                if (res && res.data && res.data.role === 'admin') {
+                    window.location.replace('admin/users.html');
+                } else {
+                    window.location.replace('my-loans.html');
+                }
+            } catch (e) {
+                window.location.replace('login.html');
+            }
+        })();
+    </script>
+</head>
+<body></body>
+</html>

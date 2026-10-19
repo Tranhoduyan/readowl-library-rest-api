@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ tài khoản — Hệ thống Thư viện</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/admin-users.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="assets/js/api.js" defer></script>
+    <script src="assets/js/profile.js" defer></script>
+</head>
+<body class="profile-loading">
+    <div id="app-wrapper" class="app-wrapper">
+        <!-- Nút tròn "<" đóng/mở Dashboard giống mẫu Ảnh 1 -->
+        <button id="btn-edge-toggle" type="button" class="sidebar-edge-toggle" title="Thu gọn / Mở rộng bảng điều hướng">
+            <i id="edge-toggle-icon" class="bi bi-chevron-left"></i>
+        </button>
+
+        <!-- Sidebar tím đậm: Menu được render tự động theo đúng vai trò (Member không thấy chức năng Admin) -->
+        <aside class="purple-sidebar" aria-label="Bảng điều hướng">
+            <div class="sidebar-inner">
+                <a id="sidebar-brand-link" href="my-loans.html" class="sidebar-logo">THƯ VIỆN</a>
+
+                <div class="sidebar-user-box">
+                    <div class="sidebar-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <p id="sidebar-user-name" class="sidebar-user-name">Đang tải...</p>
+                    <p id="sidebar-user-role" class="sidebar-user-role">—</p>
+                </div>
+
+                <!-- Menu chính (chỉ hiển thị chức năng thuộc quyền của tài khoản đang đăng nhập) -->
+                <ul id="profile-sidebar-nav" class="sidebar-nav"></ul>
+
+                <ul class="sidebar-nav sidebar-nav-bottom">
+                    <li>
+                        <a href="profile.html" class="sidebar-link active">
+                            <i class="bi bi-person-gear"></i>
+                            <span>Hồ sơ cá nhân</span>
+                        </a>
+                    </li>
+                    <li>
+                        <button id="logout-button" type="button" class="sidebar-link">
+                            <i class="bi bi-box-arrow-left"></i>
+                            <span>Đăng xuất</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Khu vực bên phải giống mẫu Ảnh 1 -->
+        <div class="main-area">
+            <header class="top-navbar">
+                <div class="topbar-left">
+                    <button id="btn-hamburger-toggle" type="button" class="btn-hamburger" title="Đóng / Mở bảng điều hướng">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <span class="fw-semibold text-secondary small">Hệ thống Thư viện Mượn – Trả Sách</span>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="dropdown">
+                        <button
+                            class="topbar-user-pill dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <span id="topbar-avatar-text" class="topbar-user-avatar">U</span>
+                            <span id="topbar-user-name">Tài khoản</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li>
+                                <a id="dropdown-workspace-link" class="dropdown-item py-2" href="my-loans.html">
+                                    <i class="bi bi-grid me-2"></i>Trang làm việc chính
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <button id="topbar-logout-btn" type="button" class="dropdown-item py-2 text-danger">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content-container">
+                <!-- Tiêu đề giống vùng "Settings" trong Ảnh 1 -->
+                <div class="page-heading-bar">
+                    <div>
+                        <h1 class="page-heading-title">Hồ sơ cá nhân</h1>
+                        <p class="page-heading-subtitle">
+                            Thông tin định danh và trạng thái hoạt động của tài khoản trong hệ thống thư viện.
+                        </p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a id="btn-back-workspace" href="my-loans.html" class="btn btn-purple">
+                            <i class="bi bi-arrow-left me-1"></i>Về trang làm việc
+                        </a>
+                    </div>
+                </div>
+
+                <p id="message" class="alert alert-info py-2" aria-live="polite">Đang tải thông tin…</p>
+
+                <!-- Card chia 2 cột giống hệt phần General Information trong Ảnh 1 -->
+                <div id="profile-info" class="workspace-card" hidden>
+                    <div class="settings-split-layout">
+                        <!-- Cột menu phụ bên trái (Chỉ giữ các mục thực tế có trong dự án) -->
+                        <div class="settings-subnav">
+                            <button type="button" class="settings-subnav-btn active">
+                                <i class="bi bi-info-circle"></i>
+                                <span>Thông tin chung</span>
+                            </button>
+                            <a id="subnav-main-feature" href="my-loans.html" class="settings-subnav-btn">
+                                <i class="bi bi-journal-bookmark"></i>
+                                <span id="subnav-main-feature-text">Thư viện & Mượn sách</span>
+                            </a>
+                        </div>
+
+                        <!-- Cột nội dung General Information bên phải giống Ảnh 1 -->
+                        <div>
+                            <div class="pb-3 mb-4 border-bottom">
+                                <h2 class="h5 fw-bold mb-1">Thông tin tài khoản (General Information)</h2>
+                                <p class="text-secondary small mb-0">
+                                    Dữ liệu tài khoản được xác thực trực tiếp từ máy chủ qua JWT.
+                                </p>
+                            </div>
+
+                            <!-- Khối Avatar đại diện giống mẫu Ảnh 1 -->
+                            <div class="d-flex align-items-center gap-3 mb-4 pb-2">
+                                <div
+                                    class="rounded-circle d-flex align-items-center justify-content-center bg-secondary-subtle text-secondary"
+                                    style="width: 68px; height: 68px; font-size: 30px;"
+                                >
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                                <div>
+                                    <div id="card-display-name" class="fw-bold fs-5 text-dark">—</div>
+                                    <div id="card-display-role" class="text-secondary small">—</div>
+                                </div>
+                            </div>
+
+                            <!-- Lưới 2 cột các trường thông tin thực tế của dự án -->
+                            <h3 class="h6 fw-bold mb-3">Thông tin định danh</h3>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <span class="profile-field-label">Mã tài khoản (User ID)</span>
+                                    <div id="user-id" class="profile-field-box"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="profile-field-label">Họ và tên (Full Name)</span>
+                                    <div id="full-name" class="profile-field-box"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="profile-field-label">Địa chỉ Email (Email Address)</span>
+                                    <div id="email" class="profile-field-box"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="profile-field-label">Vai trò hệ thống (Role)</span>
+                                    <div id="role" class="profile-field-box"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="profile-field-label">Trạng thái tài khoản (Status)</span>
+                                    <div id="is-active" class="profile-field-box"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="profile-field-label">Ngày đăng ký (Created At)</span>
+                                    <div id="created-at" class="profile-field-box"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

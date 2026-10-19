@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý độc giả — Hệ thống Thư viện</title>
+    <!-- Bootstrap 5.3 & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin-users.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="../assets/js/api.js" defer></script>
+    <script src="../assets/js/admin-users.js" defer></script>
+</head>
+<body>
+    <div id="app-wrapper" class="app-wrapper">
+        <!-- Nút tròn "<" đóng/mở nằm trên mép Sidebar đúng như mẫu Ảnh 1 -->
+        <button id="btn-edge-toggle" type="button" class="sidebar-edge-toggle" title="Thu gọn / Mở rộng bảng điều hướng">
+            <i id="edge-toggle-icon" class="bi bi-chevron-left"></i>
+        </button>
+
+        <!-- ==================================================================
+             SIDEBAR TÍM ĐẬM BÊN TRÁI (CHỈ CHỨA CÁC CHỨC NĂNG TRONG DỰ ÁN)
+             ================================================================== -->
+        <aside class="purple-sidebar" aria-label="Bảng điều hướng quản trị">
+            <div class="sidebar-inner">
+                <a href="/admin/users.html" class="sidebar-logo">THƯ VIỆN</a>
+
+                <!-- Cụm Avatar + Họ tên + Vai trò giống mẫu Ảnh 1 -->
+                <div class="sidebar-user-box">
+                    <div class="sidebar-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <p id="sidebar-user-name" class="sidebar-user-name">Quản trị viên</p>
+                    <p id="sidebar-user-role" class="sidebar-user-role">Quản trị hệ thống</p>
+                </div>
+
+                <!-- Danh sách chức năng của dự án -->
+                <ul id="sidebar-nav-main" class="sidebar-nav">
+                    <!-- Được tạo từ cấu hình trong admin-users.js -->
+                </ul>
+
+                <!-- Cụm Hồ sơ cá nhân & Đăng xuất ở đáy Sidebar giống mẫu Ảnh 1 -->
+                <ul class="sidebar-nav sidebar-nav-bottom">
+                    <li>
+                        <a href="/profile.html" class="sidebar-link">
+                            <i class="bi bi-person-gear"></i>
+                            <span>Hồ sơ cá nhân</span>
+                        </a>
+                    </li>
+                    <li>
+                        <button id="btn-sidebar-logout" type="button" class="sidebar-link">
+                            <i class="bi bi-box-arrow-left"></i>
+                            <span>Đăng xuất</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- ==================================================================
+             KHU VỰC CHÍNH BÊN PHẢI: TOPBAR + NỘI DUNG QUẢN LÝ ĐỘC GIẢ
+             ================================================================== -->
+        <div class="main-area">
+            <!-- Thanh Topbar trắng giống mẫu Ảnh 1 (Không có chuông thông báo giả) -->
+            <header class="top-navbar">
+                <div class="topbar-left">
+                    <!-- Nút 3 gạch ngang (Hamburger) đóng/mở Dashboard -->
+                    <button id="btn-hamburger-toggle" type="button" class="btn-hamburger" title="Đóng / Mở menu điều hướng">
+                        <i class="bi bi-list"></i>
+                    </button>
+
+                    <!-- Thanh Search tìm kiếm trực tiếp -->
+                    <form id="topbar-search-form" class="topbar-search-wrapper" role="search">
+                        <i class="bi bi-search"></i>
+                        <input
+                            id="search-input"
+                            type="search"
+                            class="topbar-search-input"
+                            maxlength="150"
+                            placeholder="Tìm kiếm độc giả theo họ tên hoặc email..."
+                        >
+                    </form>
+                </div>
+
+                <!-- Góc phải: Chỉ hiển thị Hồ sơ tài khoản đang đăng nhập -->
+                <div class="topbar-right">
+                    <div class="dropdown">
+                        <button
+                            class="topbar-user-pill dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+                            <span id="topbar-avatar-text" class="topbar-user-avatar">A</span>
+                            <span id="topbar-user-name">Admin</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li>
+                                <a class="dropdown-item py-2" href="/profile.html">
+                                    <i class="bi bi-person-badge me-2"></i>Hồ sơ cá nhân
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <button id="btn-topbar-logout" type="button" class="dropdown-item py-2 text-danger">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Vùng Nội dung Quản lý Độc giả -->
+            <main class="content-container">
+                <!-- Tiêu đề trang + Nút hành động góc phải giống mẫu Ảnh 1 -->
+                <div class="page-heading-bar">
+                    <div>
+                        <h1 class="page-heading-title">Quản lý Độc giả</h1>
+                        <p class="page-heading-subtitle">
+                            Quản lý danh sách tài khoản độc giả, xem lịch sử mượn trả, khóa/mở khóa hoặc xóa tài khoản.
+                        </p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button id="btn-reset-filter" type="button" class="btn btn-outline-purple">
+                            Đặt lại bộ lọc
+                        </button>
+                        <button id="btn-refresh" type="button" class="btn btn-purple">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Làm mới dữ liệu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3 Thẻ thống kê nhanh -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="kpi-card">
+                            <div>
+                                <div class="text-secondary small fw-semibold text-uppercase">Tổng số độc giả</div>
+                                <div id="stat-total-members" class="fs-3 fw-bold text-dark mt-1">0</div>
+                            </div>
+                            <div class="kpi-icon bg-primary-subtle text-primary">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="kpi-card">
+                            <div>
+                                <div class="text-secondary small fw-semibold text-uppercase">Đang hoạt động</div>
+                                <div id="stat-active-members" class="fs-3 fw-bold text-success mt-1">0</div>
+                            </div>
+                            <div class="kpi-icon bg-success-subtle text-success">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="kpi-card">
+                            <div>
+                                <div class="text-secondary small fw-semibold text-uppercase">Đã bị khóa</div>
+                                <div id="stat-locked-members" class="fs-3 fw-bold text-danger mt-1">0</div>
+                            </div>
+                            <div class="kpi-icon bg-danger-subtle text-danger">
+                                <i class="bi bi-lock-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thông báo lỗi / thành công -->
+                <div id="status-banner" class="alert d-none mb-3" role="alert"></div>
+
+                <!-- Card chính chia 2 cột giống bố cục mẫu Ảnh 1 -->
+                <div class="workspace-card">
+                    <div class="settings-split-layout">
+                        <!-- Cột trái bên trong Card: Menu lọc trạng thái giống Ảnh 1 -->
+                        <div class="settings-subnav">
+                            <button type="button" class="settings-subnav-btn active" data-status-filter="">
+                                <i class="bi bi-info-circle"></i>
+                                <span>Tất cả độc giả</span>
+                            </button>
+                            <button type="button" class="settings-subnav-btn" data-status-filter="1">
+                                <i class="bi bi-shield-check"></i>
+                                <span>Đang hoạt động</span>
+                            </button>
+                            <button type="button" class="settings-subnav-btn" data-status-filter="0">
+                                <i class="bi bi-shield-lock"></i>
+                                <span>Tài khoản đã khóa</span>
+                            </button>
+
+                            <hr class="my-2 text-secondary opacity-25">
+
+                            <div class="px-2 pt-1">
+                                <label for="limit-select" class="form-label small fw-semibold text-secondary mb-1">
+                                    Số dòng mỗi trang
+                                </label>
+                                <select id="limit-select" class="form-select form-select-sm">
+                                    <option value="5">5 độc giả / trang</option>
+                                    <option value="10" selected>10 độc giả / trang</option>
+                                    <option value="20">20 độc giả / trang</option>
+                                    <option value="50">50 độc giả / trang</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Cột phải bên trong Card: Danh sách & Bảng thao tác -->
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pb-3 mb-3 border-bottom">
+                                <div>
+                                    <h2 class="h5 fw-bold mb-1">Danh sách tài khoản Độc giả</h2>
+                                    <p class="text-secondary small mb-0">
+                                        Xem hồ sơ, khóa/mở khóa hoặc xóa tài khoản độc giả trong hệ thống.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table modern-table align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã ĐG</th>
+                                            <th>Độc giả</th>
+                                            <th>Ngày đăng ký</th>
+                                            <th>Tình trạng mượn</th>
+                                            <th>Trạng thái</th>
+                                            <th class="text-end">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="users-table-body">
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4 text-secondary">
+                                                Đang tải danh sách độc giả...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Phân trang -->
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3 mt-2 border-top">
+                                <span id="pagination-info" class="small text-secondary fw-medium">Đang tải...</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button id="btn-prev-page" type="button" class="btn btn-sm btn-outline-secondary" disabled>
+                                        <i class="bi bi-chevron-left"></i> Trước
+                                    </button>
+                                    <span id="page-indicator" class="small fw-semibold px-2">Trang 1 / 1</span>
+                                    <button id="btn-next-page" type="button" class="btn btn-sm btn-outline-secondary" disabled>
+                                        Sau <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         MODAL 1: XEM CHI TIẾT ĐỘC GIẢ & LỊCH SỬ MƯỢN TRẢ (DG03)
+         ====================================================================== -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="detailModalLabel">
+                        <i class="bi bi-person-vcard me-2 text-primary"></i>Hồ sơ chi tiết Độc giả
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <span class="profile-field-label">Mã độc giả</span>
+                            <div id="detail-id" class="profile-field-box">—</div>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="profile-field-label">Trạng thái tài khoản</span>
+                            <div id="detail-status" class="profile-field-box">—</div>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="profile-field-label">Họ và tên</span>
+                            <div id="detail-name" class="profile-field-box">—</div>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="profile-field-label">Địa chỉ Email</span>
+                            <div id="detail-email" class="profile-field-box">—</div>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="profile-field-label">Vai trò</span>
+                            <div id="detail-role" class="profile-field-box">Độc giả (Member)</div>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="profile-field-label">Ngày đăng ký</span>
+                            <div id="detail-created" class="profile-field-box">—</div>
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold mb-3">Thống kê mượn – trả sách</h6>
+                    <div class="row g-2 mb-4 text-center">
+                        <div class="col-3">
+                            <div class="p-2 border rounded-3 bg-warning-subtle">
+                                <div id="detail-stat-pending" class="fs-5 fw-bold text-dark">0</div>
+                                <div class="small text-secondary">Chờ xử lý</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="p-2 border rounded-3 bg-primary-subtle">
+                                <div id="detail-stat-borrowed" class="fs-5 fw-bold text-primary">0</div>
+                                <div class="small text-secondary">Đang mượn</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="p-2 border rounded-3 bg-success-subtle">
+                                <div id="detail-stat-returned" class="fs-5 fw-bold text-success">0</div>
+                                <div class="small text-secondary">Đã trả</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="p-2 border rounded-3 bg-danger-subtle">
+                                <div id="detail-stat-overdue" class="fs-5 fw-bold text-danger">0</div>
+                                <div class="small text-secondary">Quá hạn</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold mb-2">Lịch sử phiếu mượn gần đây</h6>
+                    <div class="table-responsive border rounded-3">
+                        <table class="table table-sm modern-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Mã phiếu</th>
+                                    <th>Đầu sách</th>
+                                    <th>Ngày yêu cầu</th>
+                                    <th>Hạn trả</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-loans-body">
+                                <tr>
+                                    <td colspan="5" class="text-center py-3 text-secondary">Chưa có dữ liệu.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         MODAL 2: XÁC NHẬN KHÓA / MỞ KHÓA HOẶC XÓA ĐỘC GIẢ (DG04 & DELETE)
+         ====================================================================== -->
+    <div class="modal fade" id="actionConfirmModal" tabindex="-1" aria-labelledby="actionConfirmTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="actionConfirmTitle">Xác nhận thao tác</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="action-confirm-message" class="fw-semibold mb-2"></p>
+                    <p id="action-confirm-note" class="text-secondary small mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button id="btn-confirm-submit" type="button" class="btn btn-primary">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

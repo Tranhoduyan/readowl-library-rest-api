@@ -1,0 +1,9 @@
+
+/vendor/
+
+/config/jwt-secret.php
+
+/vendor/
+/config/jwt-secret.php
+*.zip
+*_backup.sql

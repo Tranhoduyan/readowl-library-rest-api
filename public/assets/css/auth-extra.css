@@ -1,0 +1,97 @@
+.auth-link {
+    margin: 20px 0 0;
+    line-height: 1.5;
+}
+
+a {
+    color: #2563eb;
+}
+
+dl {
+    margin: 20px 0;
+}
+
+dt {
+    margin-top: 14px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+dd {
+    margin: 5px 0 0;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+.admin-panel-btn {
+    display: block;
+    width: 100%;
+    margin: 0 0 12px;
+    padding: 12px;
+    background: #facc15;
+    border: 1.5px solid #ca8a04;
+    border-radius: 5px;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+}
+
+.admin-panel-btn:hover {
+    background: #fde047;
+}
+
+/* Giao diện đăng nhập ReadOwl */
+.login-page {
+    background: #f6efe6;
+    color: #4a3b32;
+}
+
+.login-page .auth-box {
+    background: #fdfbf7;
+    border-color: #dfd3c3;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(107, 68, 35, 0.1);
+}
+
+.login-logo {
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.login-logo img {
+    width: 180px;
+    max-width: 100%;
+    height: auto;
+}
+
+.login-page h1 {
+    color: #6b4423;
+    text-align: center;
+}
+
+.login-page .description {
+    color: #8c7a6b;
+    text-align: center;
+}
+
+.login-page input {
+    border-color: #d8c8b4;
+}
+
+.login-page input:focus {
+    outline: 2px solid #e6d4bc;
+    border-color: #8b5e3c;
+}
+
+.login-page button {
+    background: #6b4423;
+}
+
+.login-page button:hover {
+    background: #53331b;
+}
+
+.login-page a {
+    color: #6b4423;
+}

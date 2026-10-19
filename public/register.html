@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký tài khoản thư viện</title>
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <script src="assets/js/api.js" defer></script>
+    <script src="assets/js/register.js" defer></script>
+</head>
+<body>
+    <main class="auth-box">
+        <p class="brand">THƯ VIỆN</p>
+        <h1>Tạo tài khoản độc giả</h1>
+        <p class="description">Đăng ký để gửi yêu cầu mượn sách và theo dõi lịch sử của bạn.</p>
+
+        <form id="register-form">
+            <div class="form-group">
+                <label for="full-name">Họ và tên</label>
+                <input id="full-name" name="full_name" type="text" autocomplete="name"
+                    minlength="2" maxlength="100" required>
+                <span id="full-name-error" class="field-error" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="email"
+                    maxlength="150" required>
+                <span id="email-error" class="field-error" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input id="password" name="password" type="password" autocomplete="new-password"
+                    minlength="8" maxlength="72" required>
+                <small>Ít nhất 8 ký tự.</small>
+                <span id="password-error" class="field-error" aria-live="polite"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Nhập lại mật khẩu</label>
+                <input id="confirm-password" name="confirm_password" type="password"
+                    autocomplete="new-password" minlength="8" maxlength="72" required>
+                <span id="confirm-password-error" class="field-error" aria-live="polite"></span>
+            </div>
+
+            <button id="register-button" type="submit">Đăng ký</button>
+            <p id="message" class="message" aria-live="polite"></p>
+        </form>
+    </main>
+</body>
+</html>

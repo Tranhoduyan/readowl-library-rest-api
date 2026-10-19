@@ -1,0 +1,1131 @@
+/* ==========================================================================
+   HỆ THỐNG GIAO DIỆN THEO MẪU ẢNH 1 (SIDEBAR TÍM ĐẬM + BOOTSTRAP 5)
+   Dễ dàng chỉnh sửa màu sắc, kích thước tại khối :root bên dưới.
+   ========================================================================== */
+:root {
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 0px;
+    --sidebar-bg: #2e026d;
+    --sidebar-bg-gradient: linear-gradient(180deg, #32047a 0%, #240154 100%);
+    --sidebar-text: rgba(255, 255, 255, 0.82);
+    --sidebar-text-active: #ffffff;
+    --sidebar-pill-active: rgba(255, 255, 255, 0.16);
+    --sidebar-pill-border: rgba(255, 255, 255, 0.28);
+
+    --primary-purple: #4338ca;
+    --primary-purple-hover: #3730a3;
+    --body-bg: #f4f5f9;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --border-light: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: var(--body-bg);
+    color: var(--text-dark);
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   1. BỐ CỤC TỔNG THỂ (SIDEBAR TRÁI + VÙNG NỘI DUNG PHẢI)
+   ========================================================================== */
+.app-wrapper {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Sidebar tím đậm giống mẫu Ảnh 1 */
+.purple-sidebar {
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg-gradient);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.28s ease;
+    z-index: 1030;
+    padding: 28px 18px 22px;
+    user-select: none;
+}
+
+/* Trạng thái đóng (thu gọn) Dashboard */
+.app-wrapper.sidebar-collapsed .purple-sidebar {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+}
+
+.app-wrapper.sidebar-collapsed .purple-sidebar .sidebar-inner {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: calc(var(--sidebar-width) - 36px);
+    transition: opacity 0.18s ease;
+}
+
+/* Nút tròn "<" đóng/mở nằm ngay trên mép Sidebar giống mẫu Ảnh 1 */
+.sidebar-edge-toggle {
+    position: fixed;
+    top: 24px;
+    left: calc(var(--sidebar-width) - 16px);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #2e026d;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1040;
+    transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease, background-color 0.15s ease;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.sidebar-edge-toggle:hover {
+    background: #f8fafc;
+    transform: scale(1.06);
+}
+
+.app-wrapper.sidebar-collapsed .sidebar-edge-toggle {
+    left: 12px;
+}
+
+/* Logo ở đỉnh Sidebar */
+.sidebar-logo {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin-bottom: 26px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Cụm Avatar + Tên + Vai trò dưới Logo giống mẫu Ảnh 1 */
+.sidebar-user-box {
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 0 8px;
+}
+
+.sidebar-avatar {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    color: #334155;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    overflow: hidden;
+}
+
+.sidebar-user-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    overflow-wrap: anywhere;
+}
+
+.sidebar-user-role {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.68);
+}
+
+/* Danh sách menu trên Sidebar */
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sidebar-nav-bottom {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 11px 16px;
+    border-radius: 10px;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.18s ease;
+    border: 1px solid transparent;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar-link i {
+    font-size: 17px;
+    width: 22px;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.sidebar-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.sidebar-link.active {
+    color: var(--sidebar-text-active);
+    background: var(--sidebar-pill-active);
+    border-color: var(--sidebar-pill-border);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* ==========================================================================
+   2. KHU VỰC BÊN PHẢI: TOPBAR TRẮNG + NỘI DUNG CHÍNH
+   ========================================================================== */
+.main-area {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--body-bg);
+}
+
+/* Thanh Topbar trắng giống mẫu Ảnh 1 */
+.top-navbar {
+    height: 74px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-light);
+    padding: 0 32px 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1010;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    max-width: 520px;
+}
+
+/* Nút 3 gạch ngang (Hamburger) đóng/mở Dashboard */
+.btn-hamburger {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    background: #ffffff;
+    color: #334155;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.btn-hamburger:hover {
+    background: #f1f5f9;
+    color: #2e026d;
+}
+
+/* Ô Search trên Topbar giống Ảnh 1 */
+.topbar-search-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.topbar-search-wrapper i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 15px;
+}
+
+.topbar-search-input {
+    width: 100%;
+    padding: 9px 16px 9px 40px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: all 0.15s ease;
+}
+
+.topbar-search-input:focus {
+    outline: none;
+    background: #ffffff;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+/* Cụm User góc phải Topbar giống Ảnh 1 */
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.topbar-user-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: transparent;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.topbar-user-pill:hover {
+    background: #f1f5f9;
+}
+
+.topbar-user-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #4338ca;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   3. NỘI DUNG TRANG (PAGE CONTENT & CARDS GIỐNG MẪU ẢNH 1)
+   ========================================================================== */
+.content-container {
+    padding: 30px 36px;
+    flex: 1;
+}
+
+.page-heading-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.page-heading-title {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.page-heading-subtitle {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.btn-purple {
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    color: #ffffff;
+    border: none;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 8px;
+    transition: all 0.18s ease;
+}
+
+.btn-purple:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #312e81 100%);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-outline-purple {
+    background: #ffffff;
+    color: #4338ca;
+    border: 1.5px solid #6366f1;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: all 0.18s ease;
+}
+
+.btn-outline-purple:hover {
+    background: #eef2ff;
+    color: #312e81;
+}
+
+/* Card chính màu trắng bo góc mịn giống mẫu Ảnh 1 */
+.workspace-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+    padding: 26px;
+}
+
+/* Bố cục 2 cột bên trong Card (Dùng cho cả Hồ sơ cá nhân & Bộ lọc nhanh) */
+.settings-split-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.settings-subnav {
+    border-right: 1px solid #e2e8f0;
+    padding-right: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.settings-subnav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+}
+
+.settings-subnav-btn:hover {
+    background: #f8fafc;
+    color: #2e026d;
+}
+
+.settings-subnav-btn.active {
+    background: #f3e8ff;
+    color: #3b0764;
+    font-weight: 700;
+}
+
+/* KPI Mini Cards */
+.kpi-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+}
+
+.kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+/* Bảng dữ liệu hiện đại */
+.modern-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 13px 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modern-table td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+}
+
+.modern-table tbody tr:hover {
+    background: #fafaff;
+}
+
+/* Các ô hiển thị kiểu Form trong trang Hồ sơ cá nhân giống Ảnh 1 */
+.profile-field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.profile-field-box {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 14.5px;
+    font-weight: 500;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 991.98px) {
+    .settings-split-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-subnav {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        padding-right: 0;
+        padding-bottom: 14px;
+    }
+
+    .content-container {
+        padding: 20px 16px;
+    }
+}
+
+/* ==========================================================================
+   4. CÁC LỚP ĐỒNG BỘ CHO CÁC TRANG QUẢN TRỊ MỞ RỘNG (LOANS, BOOKS, CATEGORIES, DASHBOARD)
+   ========================================================================== */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+}
+
+.admin-sidebar {
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg-gradient);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1), padding 0.28s ease;
+    z-index: 1030;
+    padding: 24px 16px 20px;
+    user-select: none;
+}
+
+.admin-layout.sidebar-collapsed .admin-sidebar {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+}
+
+.admin-layout.sidebar-collapsed .admin-sidebar > *:not(.sidebar-collapse-btn) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar-collapse-btn {
+    position: fixed;
+    top: 22px;
+    left: calc(var(--sidebar-width) - 16px);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #2e026d;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1040;
+    transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.admin-layout.sidebar-collapsed .sidebar-collapse-btn {
+    left: 12px;
+}
+
+.admin-layout.sidebar-collapsed .sidebar-collapse-btn i::before {
+    content: "\f285"; /* bi-chevron-right */
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 16px;
+    padding: 4px 10px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    margin-bottom: 16px;
+}
+
+.brand-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.16);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sidebar-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #6366f1;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.user-meta .user-name {
+    margin: 0;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.user-meta .user-role {
+    margin: 0;
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.btn-sidebar-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.btn-sidebar-logout:hover {
+    background: rgba(239, 68, 68, 0.85);
+    border-color: transparent;
+}
+
+.admin-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--body-bg);
+}
+
+.admin-topbar {
+    height: 70px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-light);
+    padding: 0 28px 0 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 1010;
+}
+
+.topbar-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.admin-content {
+    padding: 26px 32px;
+    flex: 1;
+}
+
+.workspace-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.workspace-card-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.filter-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 240px;
+    max-width: 420px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 8px 14px 8px 36px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+.btn-filter {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: #4338ca;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-reset {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #475569;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.users-table td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.empty-row {
+    text-align: center;
+    padding: 32px !important;
+    color: #64748b;
+}
+
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.badge-locked {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.badge-role {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.action-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.btn-view, .btn-unlock, .btn-lock, .btn-delete {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-view {
+    background: #eef2ff;
+    color: #4338ca;
+}
+
+.btn-unlock {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.btn-lock {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.btn-delete {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.page-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-page {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-page:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.alert-banner {
+    display: none;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.alert-banner.show {
+    display: block;
+}
+
+.alert-banner.alert-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.alert-banner.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 16px;
+}
+
+.modal-overlay[hidden] {
+    display: none !important;
+}
+
+.modal-card {
+    background: #ffffff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Tông kem - nâu cho trang Hồ sơ cá nhân */
+.profile-page {
+    --body-bg: #f6efe6;
+    --text-dark: #4a3b32;
+    --text-muted: #8c7a6b;
+    --border-light: #e4d9c8;
+}
+
+.profile-page .purple-sidebar {
+    background: #fdfbf7;
+    border-right: 1px solid #e4d9c8;
+}
+
+.profile-page .sidebar-logo,
+.profile-page .sidebar-user-name,
+.profile-page .sidebar-link,
+.profile-page .page-heading-title {
+    color: #6b4423;
+}
+
+.profile-page .sidebar-user-role {
+    color: #8c7a6b;
+}
+
+.profile-page .sidebar-link:hover,
+.profile-page .sidebar-link.active {
+    background: #efe6da;
+    color: #6b4423;
+    border-color: #d8c8b4;
+    box-shadow: none;
+}
+
+.profile-page .sidebar-nav-bottom {
+    border-color: #e4d9c8;
+}
+
+.profile-page .sidebar-avatar {
+    background: #efe6da;
+    color: #6b4423;
+    border-color: #d8c8b4;
+}
+
+.profile-page .top-navbar,
+.profile-page .workspace-card {
+    background: #fdfbf7;
+    border-color: #e4d9c8;
+}
+
+.profile-page .btn-hamburger,
+.profile-page .sidebar-edge-toggle {
+    background: #fdfbf7;
+    color: #6b4423;
+    border-color: #d8c8b4;
+}
+
+.profile-page .btn-hamburger:hover,
+.profile-page .sidebar-edge-toggle:hover,
+.profile-page .topbar-user-pill:hover {
+    background: #efe6da;
+    color: #6b4423;
+}
+
+.profile-page .settings-subnav {
+    border-color: #e4d9c8;
+}
+
+.profile-page .settings-subnav-btn {
+    color: #6b5748;
+}
+
+.profile-page .settings-subnav-btn:hover,
+.profile-page .settings-subnav-btn.active {
+    background: #efe6da;
+    color: #6b4423;
+}
+
+.profile-page .profile-field-label {
+    color: #8c7a6b;
+}
+
+.profile-page .profile-field-box {
+    background: #fbf6ee;
+    border-color: #dfd3c3;
+    color: #4a3b32;
+}
+
+.profile-page .btn-purple,
+.profile-page .topbar-user-avatar {
+    background: #6b4423;
+    color: #ffffff;
+}
+
+.profile-page .btn-purple:hover {
+    background: #53331b;
+    color: #ffffff;
+}
+
+body.profile-loading {
+    background: #f6efe6;
+}
+
+.profile-loading #app-wrapper {
+    visibility: hidden;
+}

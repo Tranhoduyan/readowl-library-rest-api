@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Kho sách — Hệ thống Thư viện</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/admin-users.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="../assets/js/api.js" defer></script>
+    <script src="../assets/js/admin-books.js" defer></script>
+</head>
+<body>
+    <div id="app-wrapper" class="app-wrapper">
+        <button id="btn-edge-toggle" type="button" class="sidebar-edge-toggle" title="Thu gọn / Mở rộng bảng điều hướng">
+            <i id="edge-toggle-icon" class="bi bi-chevron-left"></i>
+        </button>
+
+        <aside class="purple-sidebar" aria-label="Bảng điều hướng quản trị">
+            <div class="sidebar-inner">
+                <a href="/admin/dashboard.html" class="sidebar-logo">THƯ VIỆN</a>
+
+                <div class="sidebar-user-box">
+                    <div class="sidebar-avatar"><i class="bi bi-person-fill"></i></div>
+                    <p id="sidebar-user-name" class="sidebar-user-name">Quản trị viên</p>
+                    <p id="sidebar-user-role" class="sidebar-user-role">Quản trị hệ thống</p>
+                </div>
+
+                <ul class="sidebar-nav">
+                    <li><a href="/admin/dashboard.html" class="sidebar-link"><i class="bi bi-grid-1x2-fill"></i><span>Tổng quan (Dashboard)</span></a></li>
+                    <li><a href="/admin/users.html" class="sidebar-link"><i class="bi bi-people-fill"></i><span>Quản lý độc giả</span></a></li>
+                    <li><a href="/admin/loans.html" class="sidebar-link"><i class="bi bi-journal-arrow-up"></i><span>Quản lý mượn – trả</span></a></li>
+                    <li><a href="/admin/books.html" class="sidebar-link active"><i class="bi bi-book-half"></i><span>Quản lý kho sách</span></a></li>
+                    <li><a href="/admin/categories.html" class="sidebar-link"><i class="bi bi-tags-fill"></i><span>Quản lý danh mục</span></a></li>
+                </ul>
+
+                <ul class="sidebar-nav sidebar-nav-bottom">
+                    <li><a href="/profile.html" class="sidebar-link"><i class="bi bi-person-gear"></i><span>Hồ sơ cá nhân</span></a></li>
+                    <li><button id="btn-sidebar-logout" type="button" class="sidebar-link"><i class="bi bi-box-arrow-left"></i><span>Đăng xuất</span></button></li>
+                </ul>
+            </div>
+        </aside>
+
+        <div class="main-area">
+            <header class="top-navbar">
+                <div class="topbar-left">
+                    <button id="btn-hamburger-toggle" type="button" class="btn-hamburger" title="Đóng / Mở menu điều hướng">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <form id="topbar-search-form" class="topbar-search-wrapper" role="search">
+                        <i class="bi bi-search"></i>
+                        <input id="search-input" type="search" class="topbar-search-input" placeholder="Tìm kiếm đầu sách theo tên hoặc tác giả...">
+                    </form>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="dropdown">
+                        <button class="topbar-user-pill dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <span id="topbar-avatar-text" class="topbar-user-avatar">A</span>
+                            <span id="topbar-user-name">Admin</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item py-2" href="/profile.html"><i class="bi bi-person-badge me-2"></i>Hồ sơ cá nhân</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><button id="btn-topbar-logout" type="button" class="dropdown-item py-2 text-danger"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content-container">
+                <div class="page-heading-bar">
+                    <div>
+                        <h1 class="page-heading-title">Quản lý Kho sách</h1>
+                        <p class="page-heading-subtitle">Thêm mới, cập nhật đầu sách, điều chỉnh tổng số bản và trạng thái cho mượn.</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button id="btn-add-book" type="button" class="btn btn-purple">
+                            <i class="bi bi-plus-lg me-1"></i>Thêm đầu sách mới
+                        </button>
+                    </div>
+                </div>
+
+                <div id="status-banner" class="alert d-none mb-3" role="alert"></div>
+
+                <div class="workspace-card">
+                    <div class="table-responsive">
+                        <table class="table modern-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Đầu sách &amp; Tác giả</th>
+                                    <th>Danh mục</th>
+                                    <th>Tồn kho (Khả dụng / Tổng)</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-end">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="books-table-body">
+                                <tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải danh sách sách...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Thêm / Sửa Đầu sách -->
+    <div class="modal fade" id="bookFormModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <form id="book-form">
+                    <div class="modal-header bg-light">
+                        <h5 id="book-modal-title" class="modal-title fw-bold">Thêm đầu sách mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input id="book-id-input" type="hidden">
+                        <div class="mb-3">
+                            <label for="book-title-input" class="form-label small fw-bold">Tên đầu sách *</label>
+                            <input id="book-title-input" type="text" class="form-control" maxlength="200" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="book-author-input" class="form-label small fw-bold">Tác giả *</label>
+                            <input id="book-author-input" type="text" class="form-control" maxlength="200" required>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label for="book-category-input" class="form-label small fw-bold">Danh mục *</label>
+                                <select id="book-category-input" class="form-select" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="book-copies-input" class="form-label small fw-bold">Tổng số bản *</label>
+                                <input id="book-copies-input" type="number" min="0" max="10000" class="form-control" value="3" required>
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label for="book-publisher-input" class="form-label small fw-bold">Nhà xuất bản</label>
+                                <input id="book-publisher-input" type="text" class="form-control" maxlength="200">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="book-year-input" class="form-label small fw-bold">Năm xuất bản</label>
+                                <input id="book-year-input" type="number" min="1000" max="2100" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="book-desc-input" class="form-label small fw-bold">Mô tả</label>
+                            <textarea id="book-desc-input" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div id="book-active-wrap" class="form-check">
+                            <input id="book-active-input" class="form-check-input" type="checkbox" checked>
+                            <label class="form-check-label small fw-semibold" for="book-active-input">
+                                Đang cho phép mượn mới (is_active = 1)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-purple">Lưu đầu sách</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

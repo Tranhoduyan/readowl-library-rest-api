@@ -1,0 +1,1193 @@
+openapi: 3.0.3
+info:
+  title: Library REST API - Auth, Users and Loans
+  version: 1.1.0
+  description: Khớp API PHP hiện tại. Ngày/giờ SQL dùng múi giờ +07:00. JWT chứa sub; quyền và trạng thái tài khoản
+    được đọc lại từ CSDL.
+servers:
+- url: http://localhost:8000/api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id: &id001
+          type: integer
+          minimum: 1
+        full_name: &id002
+          type: string
+        email: &id003
+          type: string
+          format: email
+        role: &id004
+          type: string
+          enum:
+          - admin
+          - member
+        is_active: &id005
+          type: integer
+          enum:
+          - 0
+          - 1
+        created_at: &id006
+          type: string
+          example: '2026-10-19 16:00:00'
+      required:
+      - id
+      - full_name
+      - email
+      - role
+      - is_active
+      - created_at
+    RegisteredUser:
+      type: object
+      properties:
+        id: *id001
+        full_name: *id002
+        email: *id003
+        role: *id004
+        is_active: *id005
+      required:
+      - id
+      - full_name
+      - email
+      - role
+      - is_active
+    UserListItem:
+      type: object
+      properties:
+        id: *id001
+        full_name: *id002
+        email: *id003
+        role: *id004
+        is_active: *id005
+        created_at: *id006
+        borrowed_count:
+          type: integer
+        pending_count:
+          type: integer
+        overdue_count:
+          type: integer
+    UserDetail:
+      type: object
+      properties:
+        id: *id001
+        full_name: *id002
+        email: *id003
+        role: *id004
+        is_active: *id005
+        created_at: *id006
+        loan_stats:
+          $ref: '#/components/schemas/LoanSummary'
+        recent_loans:
+          type: array
+          items:
+            type: object
+            properties:
+              id: &id007
+                type: integer
+              book_id: &id008
+                type: integer
+              book_title: &id009
+                type: string
+                nullable: true
+              book_author: &id010
+                type: string
+                nullable: true
+              status: &id011
+                type: string
+                enum:
+                - pending
+                - borrowed
+                - returned
+                - rejected
+                - cancelled
+              is_overdue: &id012
+                type: boolean
+              requested_at: &id013
+                type: string
+              borrowed_at: &id014
+                type: string
+                nullable: true
+              due_date: &id015
+                type: string
+                format: date
+                nullable: true
+              returned_at: &id016
+                type: string
+                nullable: true
+              rejection_reason: &id017
+                type: string
+                nullable: true
+    Loan:
+      type: object
+      properties:
+        id: *id007
+        user_id:
+          type: integer
+        user_name:
+          type: string
+          nullable: true
+        user_email:
+          type: string
+          nullable: true
+        user_is_active:
+          type: integer
+          enum:
+          - 0
+          - 1
+          nullable: true
+        book_id: *id008
+        book_title: *id009
+        book_author: *id010
+        book_cover:
+          type: string
+          nullable: true
+        book_available_copies:
+          type: integer
+          nullable: true
+        book_total_copies:
+          type: integer
+          nullable: true
+        category_name:
+          type: string
+          nullable: true
+        status: *id011
+        is_overdue: *id012
+        is_returned_late:
+          type: boolean
+        requested_at: *id013
+        borrowed_at: *id014
+        due_date: *id015
+        returned_at: *id016
+        approved_by:
+          type: integer
+          nullable: true
+        approved_by_name:
+          type: string
+          nullable: true
+        returned_by:
+          type: integer
+          nullable: true
+        returned_by_name:
+          type: string
+          nullable: true
+        rejection_reason: *id017
+        links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ActionLink'
+      required:
+      - id
+      - user_id
+      - user_name
+      - user_email
+      - user_is_active
+      - book_id
+      - book_title
+      - book_author
+      - book_cover
+      - book_available_copies
+      - book_total_copies
+      - category_name
+      - status
+      - is_overdue
+      - is_returned_late
+      - requested_at
+      - borrowed_at
+      - due_date
+      - returned_at
+      - approved_by
+      - approved_by_name
+      - returned_by
+      - returned_by_name
+      - rejection_reason
+      - links
+    LoanSummary:
+      type: object
+      properties:
+        total_loans:
+          type: integer
+        pending_count:
+          type: integer
+        borrowed_count:
+          type: integer
+        overdue_count:
+          type: integer
+        returned_count:
+          type: integer
+        rejected_count:
+          type: integer
+        cancelled_count:
+          type: integer
+    ActionLink:
+      type: object
+      properties:
+        href:
+          type: string
+        method:
+          type: string
+          enum:
+          - GET
+          - PATCH
+        body:
+          type: object
+          additionalProperties: true
+      required:
+      - href
+      - method
+    Token:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          enum:
+          - Bearer
+        expires_in:
+          type: integer
+          example: 900
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+      - access_token
+      - token_type
+      - expires_in
+      - user
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum:
+          - false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            fields:
+              type: object
+              additionalProperties:
+                type: string
+          required:
+          - code
+          - message
+          - fields
+      required:
+      - success
+      - error
+    UserMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        total_pages:
+          type: integer
+        summary:
+          type: object
+          properties:
+            total_members:
+              type: integer
+            active_members:
+              type: integer
+            locked_members:
+              type: integer
+    LoanMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        total_pages:
+          type: integer
+        summary:
+          $ref: '#/components/schemas/LoanSummary'
+paths:
+  /auth/register:
+    post:
+      summary: Đăng ký Member; role/is_active do máy chủ đặt
+      tags:
+      - Auth
+      responses:
+        '201':
+          description: Đã tạo tài khoản; không trả password/hash.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    $ref: '#/components/schemas/RegisteredUser'
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Đường dẫn /api/v1/users/{id}; chỉ Admin được đọc tài nguyên này.
+        '400':
+          description: 'INVALID_JSON: JSON sai cú pháp.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Xung đột dữ liệu hoặc chuyển trạng thái không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: 'Phải gửi Content-Type: application/json.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: 'VALIDATION_ERROR: sai dữ liệu hoặc bộ lọc.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name:
+                  type: string
+                  minLength: 2
+                  maxLength: 100
+                email:
+                  type: string
+                  format: email
+                  maxLength: 150
+                password:
+                  type: string
+                  minLength: 8
+                  description: Không trim; tối đa 72 byte UTF-8, không có byte NUL.
+              required:
+              - full_name
+              - email
+              - password
+  /auth/login:
+    post:
+      summary: Đăng nhập và cấp JWT HS256, thời hạn 15 phút
+      tags:
+      - Auth
+      responses:
+        '200':
+          description: Token và tài khoản hiện tại.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    $ref: '#/components/schemas/Token'
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+        '400':
+          description: 'INVALID_JSON: JSON sai cú pháp.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Không đủ quyền; đăng nhập tài khoản bị khóa trả ACCOUNT_DISABLED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: 'Phải gửi Content-Type: application/json.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: 'VALIDATION_ERROR: sai dữ liệu hoặc bộ lọc.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required:
+              - email
+              - password
+  /me:
+    get:
+      summary: Xem hồ sơ từ JWT đã xác minh
+      tags:
+      - Profile
+      responses:
+        '200':
+          description: Tài khoản hiện tại.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    $ref: '#/components/schemas/User'
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: &id018
+      - bearerAuth: []
+  /auth/me:
+    get:
+      summary: Xem hồ sơ từ JWT đã xác minh
+      tags:
+      - Profile
+      responses:
+        '200':
+          description: Tài khoản hiện tại.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    $ref: '#/components/schemas/User'
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: *id018
+  /users:
+    get:
+      summary: Danh sách Member; data là mảng, meta nằm cùng cấp với data
+      tags:
+      - Users
+      responses:
+        '200':
+          description: Danh sách và thống kê; không trả hash.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserListItem'
+                  message:
+                    type: string
+                  meta:
+                    $ref: '#/components/schemas/UserMeta'
+                required:
+                - success
+                - data
+                - message
+                - meta
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Không đủ quyền; đăng nhập tài khoản bị khóa trả ACCOUNT_DISABLED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: 'VALIDATION_ERROR: sai dữ liệu hoặc bộ lọc.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: *id018
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+          maxLength: 150
+        description: Tìm tên hoặc email; không tìm số điện thoại.
+      - in: query
+        name: is_active
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 10
+  /users/{id}:
+    get:
+      summary: Chi tiết Member và tối đa 20 phiếu gần nhất
+      tags:
+      - Users
+      responses:
+        '200':
+          description: Hồ sơ, loan_stats và recent_loans.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    $ref: '#/components/schemas/UserDetail'
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Không đủ quyền; đăng nhập tài khoản bị khóa trả ACCOUNT_DISABLED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy tài nguyên hoặc không thuộc quyền xem.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: *id018
+      parameters:
+      - &id019
+        in: path
+        name: id
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 4294967295
+        required: true
+    patch:
+      summary: Khóa/mở khóa Member; không được sửa Admin hoặc đổi role
+      tags:
+      - Users
+      responses:
+        '200':
+          description: Tài khoản sau cập nhật.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    $ref: '#/components/schemas/User'
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+        '400':
+          description: 'INVALID_JSON: JSON sai cú pháp.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Không đủ quyền; đăng nhập tài khoản bị khóa trả ACCOUNT_DISABLED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy tài nguyên hoặc không thuộc quyền xem.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: 'Phải gửi Content-Type: application/json.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: 'VALIDATION_ERROR: sai dữ liệu hoặc bộ lọc.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: *id018
+      parameters:
+      - *id019
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_active:
+                  oneOf:
+                  - type: integer
+                    enum:
+                    - 0
+                    - 1
+                  - type: boolean
+              required:
+              - is_active
+              additionalProperties: false
+    delete:
+      summary: Chỉ xóa Member chưa có phiếu/lịch sử xử lý sách
+      tags:
+      - Users
+      responses:
+        '200':
+          description: Đã xóa tài khoản; không xóa bất kỳ phiếu mượn nào.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    type: object
+                    properties:
+                      deleted_id:
+                        type: integer
+                    required:
+                    - deleted_id
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+        '409':
+          description: 'USER_HAS_ACTIVE_LOANS hoặc USER_HAS_LOAN_HISTORY: dùng Khóa tài khoản.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Không đủ quyền; đăng nhập tài khoản bị khóa trả ACCOUNT_DISABLED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy tài nguyên hoặc không thuộc quyền xem.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: *id018
+      parameters:
+      - *id019
+  /loans:
+    post:
+      summary: Member tạo yêu cầu pending; chưa trừ tồn, user_id lấy từ JWT
+      tags:
+      - Loans
+      responses:
+        '201':
+          description: Đã tạo phiếu; kèm links theo trạng thái.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    $ref: '#/components/schemas/Loan'
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+          headers:
+            Location:
+              schema:
+                type: string
+              description: /api/v1/loans/{id}
+        '409':
+          description: OUT_OF_STOCK, BOOK_INACTIVE, DUPLICATE_LOAN hoặc BORROW_LIMIT_REACHED. Giới hạn tính các
+            phiếu borrowed, không tính pending.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: 'INVALID_JSON: JSON sai cú pháp.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Không đủ quyền; đăng nhập tài khoản bị khóa trả ACCOUNT_DISABLED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy tài nguyên hoặc không thuộc quyền xem.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: 'Phải gửi Content-Type: application/json.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: 'VALIDATION_ERROR: sai dữ liệu hoặc bộ lọc.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: *id018
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                book_id:
+                  type: integer
+                  minimum: 1
+              required:
+              - book_id
+    get:
+      summary: Member xem của mình; Admin xem tất cả; luôn có phân trang
+      tags:
+      - Loans
+      responses:
+        '200':
+          description: Danh sách phiếu; links là object theo tên hành động.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Loan'
+                  message:
+                    type: string
+                  meta:
+                    $ref: '#/components/schemas/LoanMeta'
+                required:
+                - success
+                - data
+                - message
+                - meta
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Không đủ quyền; đăng nhập tài khoản bị khóa trả ACCOUNT_DISABLED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: 'VALIDATION_ERROR: sai dữ liệu hoặc bộ lọc.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: *id018
+      parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - pending
+          - borrowed
+          - returned
+          - rejected
+          - cancelled
+          - overdue
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+          minimum: 1
+        description: Admin được chọn; Member gửi ID khác mình nhận 403.
+      - in: query
+        name: book_id
+        schema:
+          type: integer
+          minimum: 1
+      - in: query
+        name: q
+        schema:
+          type: string
+          maxLength: 150
+        description: Tìm tên/email độc giả hoặc tên sách/tác giả trong phạm vi được xem.
+  /loans/{id}:
+    get:
+      summary: Chủ phiếu hoặc Admin xem chi tiết; Member xem phiếu người khác nhận 404
+      tags:
+      - Loans
+      responses:
+        '200':
+          description: Chi tiết phiếu mượn.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    $ref: '#/components/schemas/Loan'
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy tài nguyên hoặc không thuộc quyền xem.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: *id018
+      parameters:
+      - *id019
+    patch:
+      summary: Chuyển trạng thái; chỉ pending được hủy/duyệt/từ chối, chỉ borrowed được trả
+      tags:
+      - Loans
+      responses:
+        '200':
+          description: Phiếu đã cập nhật; giao/trả đổi tồn đúng một lần.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                    - true
+                  data:
+                    $ref: '#/components/schemas/Loan'
+                  message:
+                    type: string
+                required:
+                - success
+                - data
+                - message
+        '400':
+          description: 'INVALID_JSON: JSON sai cú pháp.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Thiếu JWT, JWT sai/hết hạn hoặc tài khoản không còn hoạt động.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Không đủ quyền; đăng nhập tài khoản bị khóa trả ACCOUNT_DISABLED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy tài nguyên hoặc không thuộc quyền xem.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Xung đột dữ liệu hoặc chuyển trạng thái không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '415':
+          description: 'Phải gửi Content-Type: application/json.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: 'VALIDATION_ERROR: sai dữ liệu hoặc bộ lọc.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Lỗi máy chủ; không trả SQL hay khóa JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security: *id018
+      parameters:
+      - *id019
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                  - cancelled
+                  - borrowed
+                  - rejected
+                  - returned
+                rejection_reason:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+              required:
+              - status
+              additionalProperties: false
+              oneOf:
+              - properties:
+                  status:
+                    type: string
+                    enum:
+                    - cancelled
+                    - borrowed
+                    - returned
+              - properties:
+                  status:
+                    type: string
+                    enum:
+                    - rejected
+                required:
+                - rejection_reason
+      description: Member chỉ hủy pending của mình. Admin giao sách, từ chối hoặc nhận trả. Từ chối bắt buộc rejection_reason.
+        Không nhận due_date, user_id, book_id hay rejected_reason.

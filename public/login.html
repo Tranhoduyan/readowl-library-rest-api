@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập thư viện</title>
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="assets/css/auth-extra.css">
+    <script src="assets/js/api.js" defer></script>
+    <script src="assets/js/login.js" defer></script>
+</head>
+<body class="login-page">>
+    <main class="auth-box">
+        <div class="login-logo">
+            <img src="assets/images/readowl-logo.png" alt="ReadOwl">
+        </div>
+        <h1>Đăng nhập</h1>
+        <p class="description">Dùng tài khoản độc giả bạn đã đăng ký.</p>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" autocomplete="email" maxlength="150" required>
+                <span id="email-error" class="field-error" aria-live="polite"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input id="password" type="password" autocomplete="current-password" maxlength="72" required>
+                <span id="password-error" class="field-error" aria-live="polite"></span>
+            </div>
+            <button id="login-button" type="submit">Đăng nhập</button>
+            <p id="message" class="message" aria-live="polite"></p>
+        </form>
+        <p class="auth-link">Chưa có tài khoản? <a href="register.html">Đăng ký</a></p>
+    </main>
+</body>
+</html>
+

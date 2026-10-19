@@ -1,0 +1,585 @@
+/* ==========================================================================
+   GIAO DIỆN THƯ VIỆN & MƯỢN SÁCH ĐỘC GIẢ (THEO MẪU ẢNH 2 - READOWL SHELVES)
+   Dễ dàng chỉnh sửa màu sắc, kệ sách tại :root bên dưới.
+   ========================================================================== */
+:root {
+    --owl-outer-bg: #eef1f6;
+    --owl-frame-bg: #fdfbf7;
+    --owl-canvas-bg: #f6efe6;
+    --owl-sidebar-width: 245px;
+    --owl-text-main: #4a3b32;
+    --owl-text-muted: #8c7a6b;
+    --owl-accent: #8b5e3c;
+    --owl-pill-active: #efe6da;
+    --owl-pill-border: #d8c8b4;
+    --owl-shelf-top: #f3eadf;
+    --owl-shelf-front: #e5d8c7;
+    --owl-shelf-shadow: rgba(74, 59, 50, 0.14);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 18px;
+    background: var(--owl-outer-bg);
+    color: var(--owl-text-main);
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+}
+
+/* Khung bo góc lớn giống máy tính bảng / ứng dụng trong Ảnh 2 */
+.readowl-shell {
+    max-width: 1440px;
+    min-height: calc(100vh - 36px);
+    margin: 0 auto;
+    background: var(--owl-frame-bg);
+    border-radius: 28px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1), 0 0 0 6px rgba(255, 255, 255, 0.8);
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   1. SIDEBAR BÊN TRÁI (CÓ NÚT "<" VÀ NÚT 3 GẠCH NGANG ĐỂ ĐÓNG/MỞ)
+   ========================================================================== */
+.readowl-sidebar {
+    width: var(--owl-sidebar-width);
+    flex-shrink: 0;
+    background: var(--owl-frame-bg);
+    border-right: 2px dashed #e2d7c8;
+    padding: 28px 20px 22px;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.28s ease, padding 0.28s ease, opacity 0.2s ease;
+    position: relative;
+    z-index: 20;
+}
+
+.readowl-shell.sidebar-collapsed .readowl-sidebar {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-right: none;
+    overflow: hidden;
+    opacity: 0;
+}
+
+/* Nút tròn "<" đóng/mở nằm trên đường kẻ phân cách giống yêu cầu */
+.readowl-edge-toggle {
+    position: absolute;
+    top: 30px;
+    left: calc(var(--owl-sidebar-width) - 15px);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: var(--owl-text-main);
+    border: 1px solid #dfd3c3;
+    box-shadow: 0 3px 8px rgba(74, 59, 50, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 30;
+    transition: left 0.28s ease, transform 0.18s ease;
+    font-size: 13px;
+}
+
+.readowl-edge-toggle:hover {
+    background: var(--owl-pill-active);
+    transform: scale(1.07);
+}
+
+.readowl-shell.sidebar-collapsed .readowl-edge-toggle {
+    left: 14px;
+}
+
+/* Logo Cú mèo Readowl / Thư viện giống mẫu Ảnh 2 */
+.readowl-brand {
+    text-align: center;
+    margin-bottom: 32px;
+    text-decoration: none;
+    color: var(--owl-text-main);
+    display: block;
+}
+
+.readowl-brand .owl-glasses {
+    font-size: 24px;
+    color: #c88a4b;
+    line-height: 1;
+    display: block;
+}
+
+.readowl-brand .brand-word {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #6b4423;
+    letter-spacing: -0.5px;
+}
+
+/* Menu điều hướng độc giả (Không chứa bất kỳ chức năng Admin nào) */
+.readowl-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.readowl-nav-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--owl-text-muted);
+    font-size: 14.5px;
+    font-weight: 600;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.readowl-nav-btn i {
+    font-size: 17px;
+}
+
+.readowl-nav-btn:hover {
+    color: var(--owl-text-main);
+    background: rgba(239, 230, 218, 0.55);
+}
+
+.readowl-nav-btn.active {
+    background: var(--owl-pill-active);
+    border-color: var(--owl-pill-border);
+    color: var(--owl-text-main);
+    font-weight: 700;
+}
+
+/* Hộp "Đang mượn (Continue reading)" ở góc dưới bên trái giống Ảnh 2 */
+.continue-reading-box {
+    margin-top: auto;
+    background: #e6e7eb;
+    border-radius: 18px;
+    padding: 14px 14px 16px;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.continue-reading-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #525866;
+    margin: 0 0 10px;
+}
+
+.mini-book-cover {
+    width: 88px;
+    height: 124px;
+    margin: 0 auto 10px;
+    border-radius: 4px 8px 8px 4px;
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.22);
+    padding: 10px 8px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    overflow: hidden;
+}
+
+.mini-progress-track {
+    height: 6px;
+    background: #d8d5ce;
+    border-radius: 999px;
+    overflow: hidden;
+    width: 85%;
+    margin: 0 auto;
+}
+
+.mini-progress-bar {
+    height: 100%;
+    background: #b5926b;
+    border-radius: 999px;
+}
+
+/* Thanh thông tin User ở đáy Sidebar giống "Stephan >" trong Ảnh 2 */
+.sidebar-member-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f4efe8;
+    border: 1px solid #e4d9c8;
+    border-radius: 14px;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: var(--owl-text-main);
+    transition: background 0.15s ease;
+}
+
+.sidebar-member-pill:hover {
+    background: #ebe2d5;
+    color: var(--owl-text-main);
+}
+
+.member-pill-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #8b5e3c;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   2. KHU VỰC KỆ SÁCH CHÍNH BÊN PHẢI (MAIN BOOKSHELF CANVAS)
+   ========================================================================== */
+.readowl-main {
+    flex: 1;
+    min-width: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.readowl-canvas {
+    background: var(--owl-canvas-bg);
+    border-radius: 22px;
+    padding: 24px 32px 36px;
+    flex: 1;
+    box-shadow: inset 0 2px 6px rgba(74, 59, 50, 0.04);
+}
+
+/* Thanh công cụ phía trên cùng (Tabs + Search in My library) giống Ảnh 2 */
+.canvas-topbar {
+    background: #fdfbf7;
+    border-radius: 14px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 3px 12px rgba(74, 59, 50, 0.06);
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.btn-owl-hamburger {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    border: 1px solid #e4d9c8;
+    background: #ffffff;
+    color: var(--owl-text-main);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.btn-owl-hamburger:hover {
+    background: var(--owl-pill-active);
+}
+
+.canvas-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.canvas-tab-btn {
+    border: none;
+    background: transparent;
+    color: var(--owl-text-muted);
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 7px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.canvas-tab-btn.active {
+    background: var(--owl-pill-active);
+    color: var(--owl-text-main);
+}
+
+.canvas-search-box {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+}
+
+.canvas-search-box i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9c8c7c;
+}
+
+.canvas-search-input {
+    width: 100%;
+    border: none;
+    background: #f1ede7;
+    border-radius: 10px;
+    padding: 8px 14px 8px 38px;
+    font-size: 13.5px;
+    color: var(--owl-text-main);
+}
+
+.canvas-search-input:focus {
+    outline: 2px solid #d8c8b4;
+    background: #ffffff;
+}
+
+/* ==========================================================================
+   3. KỆ SÁCH 3D & BÌA SÁCH (BOOKSHELVES & COVERS GIỐNG MẪU ẢNH 2)
+   ========================================================================== */
+.shelf-section {
+    margin-bottom: 34px;
+}
+
+.shelf-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.shelf-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #6b5748;
+}
+
+.shelf-action-link {
+    background: transparent;
+    border: none;
+    color: #6b5748;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.shelf-action-link:hover {
+    text-decoration: underline;
+}
+
+/* Dãy sách đặt trên kệ */
+.books-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+    gap: 24px;
+    align-items: end;
+    padding: 0 14px;
+    position: relative;
+    z-index: 2;
+}
+
+.book-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.book-item:hover {
+    transform: translateY(-6px);
+}
+
+/* Bìa sách có gáy nổi như sách thật */
+.book-cover-card {
+    width: 118px;
+    height: 168px;
+    border-radius: 3px 8px 8px 3px;
+    box-shadow: -4px 6px 14px rgba(15, 23, 42, 0.22), inset 4px 0 8px rgba(255, 255, 255, 0.2);
+    padding: 12px 10px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.book-cover-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.book-cover-category {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    opacity: 0.88;
+}
+
+.book-cover-title {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.book-cover-author {
+    font-size: 10px;
+    opacity: 0.9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Nhan so luong nam trong phan chu thich, ben ngoai bia sach. */
+.book-stock-tag {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    max-width: 100%;
+    margin-top: 8px;
+    padding: 4px 9px;
+    border: 1px solid #cddfce;
+    border-radius: 999px;
+    background: #edf5ee;
+    color: #326848;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.book-stock-tag--empty,
+.book-stock-tag--returned {
+    background: #f0ece7;
+    color: #76685c;
+    border-color: #ded5ca;
+}
+
+.book-stock-tag--pending {
+    background: #fff3dc;
+    color: #8b5b12;
+    border-color: #ead4ac;
+}
+
+.book-stock-tag--borrowed {
+    background: #e9f0fc;
+    color: #345b92;
+    border-color: #cbd8ef;
+}
+
+/* Thanh kệ gỗ/kem 3D đỡ bên dưới hàng sách đúng như Ảnh 2 */
+.shelf-ledge {
+    height: 14px;
+    background: linear-gradient(180deg, var(--owl-shelf-top) 0%, var(--owl-shelf-front) 100%);
+    border-radius: 6px;
+    box-shadow: 0 8px 14px var(--owl-shelf-shadow);
+    margin-top: -2px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Thanh trạng thái dưới chân từng cuốn sách đang mượn giống Ảnh 2 */
+.book-progress-strip {
+    width: 96px;
+    height: 5px;
+    background: #dfd5c7;
+    border-radius: 999px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.book-progress-fill {
+    height: 100%;
+    background: #b58d63;
+    border-radius: 999px;
+}
+
+.book-caption {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 148px;
+    min-width: 0;
+    margin-top: 14px;
+    text-align: center;
+}
+
+.book-caption-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-height: 2.8em;
+    font-size: 12.5px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--owl-text-main);
+    white-space: normal;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+.book-caption-sub {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-height: 2.8em;
+    margin-top: 4px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--owl-text-muted);
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 991.98px) {
+    body {
+        padding: 0;
+    }
+    .readowl-shell {
+        border-radius: 0;
+        min-height: 100vh;
+    }
+    .readowl-canvas {
+        padding: 18px;
+    }
+}
