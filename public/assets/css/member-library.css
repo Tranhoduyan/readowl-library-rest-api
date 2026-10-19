@@ -583,3 +583,268 @@ body {
         padding: 18px;
     }
 }
+
+/* ==========================================================================
+   4. CHẾ ĐỘ ADMIN THEME (TỰ ĐỘNG BẬT KHI TÀI KHOẢN ĐĂNG NHẬP LÀ ADMIN)
+   Đồng bộ 100% Sidebar tím đậm + Topbar trắng + Workspace Card giống hệt trang Admin
+   ========================================================================== */
+.admin-only-block {
+    display: none !important;
+}
+
+body.admin-theme-mode {
+    padding: 0;
+    background: #f4f5f9;
+    color: #1e293b;
+}
+
+body.admin-theme-mode .admin-only-block {
+    display: flex !important;
+}
+
+body.admin-theme-mode .sidebar-user-box.admin-only-block,
+body.admin-theme-mode .sidebar-logo.admin-only-block {
+    display: block !important;
+}
+
+body.admin-theme-mode .owl-only-block {
+    display: none !important;
+}
+
+body.admin-theme-mode .readowl-shell {
+    max-width: none;
+    min-height: 100vh;
+    margin: 0;
+    background: #f4f5f9;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+body.admin-theme-mode .readowl-sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #32047a 0%, #240154 100%);
+    color: #ffffff;
+    border-right: none;
+    padding: 28px 18px 22px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+body.admin-theme-mode .readowl-shell.sidebar-collapsed .readowl-sidebar {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+body.admin-theme-mode .readowl-edge-toggle {
+    position: fixed;
+    top: 24px;
+    left: 244px;
+    width: 32px;
+    height: 32px;
+    color: #2e026d;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, 0.16);
+}
+
+body.admin-theme-mode .readowl-shell.sidebar-collapsed .readowl-edge-toggle {
+    left: 12px;
+}
+
+body.admin-theme-mode .sidebar-logo {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin-bottom: 26px;
+    text-decoration: none;
+}
+
+body.admin-theme-mode .sidebar-user-box {
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 0 8px;
+}
+
+body.admin-theme-mode .sidebar-avatar {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    color: #334155;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+body.admin-theme-mode .sidebar-user-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+body.admin-theme-mode .sidebar-user-role {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.68);
+}
+
+body.admin-theme-mode .readowl-nav {
+    gap: 6px;
+}
+
+body.admin-theme-mode .readowl-nav-bottom {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body.admin-theme-mode .readowl-nav-btn {
+    color: rgba(255, 255, 255, 0.82);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 11px 16px;
+}
+
+body.admin-theme-mode .readowl-nav-btn:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.09);
+}
+
+body.admin-theme-mode .readowl-nav-btn.active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.28);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+body.admin-theme-mode .readowl-main {
+    padding: 0;
+    background: #f4f5f9;
+}
+
+body.admin-theme-mode .admin-top-navbar {
+    height: 74px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0 32px 0 38px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1010;
+}
+
+body.admin-theme-mode .admin-topbar-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+body.admin-theme-mode .admin-topbar-pill:hover {
+    background: #f1f5f9;
+}
+
+body.admin-theme-mode .admin-topbar-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #4338ca;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+body.admin-theme-mode .admin-heading-wrap {
+    padding: 30px 36px 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+body.admin-theme-mode .admin-heading-title {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+body.admin-theme-mode .admin-heading-sub {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+body.admin-theme-mode .btn-admin-purple {
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    color: #ffffff;
+    border: none;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+body.admin-theme-mode .btn-admin-purple:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #312e81 100%);
+    color: #ffffff;
+}
+
+body.admin-theme-mode .readowl-canvas {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+    margin: 0 36px 36px;
+    padding: 26px;
+}
+
+body.admin-theme-mode .canvas-topbar {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    box-shadow: none;
+}
+
+body.admin-theme-mode .canvas-search-input {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+
+body.admin-theme-mode .shelf-title,
+body.admin-theme-mode .book-caption-title {
+    color: #0f172a;
+}
+
+body.admin-theme-mode .book-caption-sub {
+    color: #64748b;
+}
+
+body.admin-theme-mode .shelf-ledge {
+    background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%);
+    box-shadow: 0 8px 14px rgba(15, 23, 42, 0.08);
+}
+

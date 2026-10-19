@@ -1,4 +1,4 @@
-const ADMIN_SIDEBAR_ITEMS = [
+﻿const ADMIN_SIDEBAR_ITEMS = [
     {
         icon: 'bi-grid-1x2-fill',
         title: 'Tổng quan (Dashboard)',
@@ -125,7 +125,7 @@ function hideBanner() {
 
 async function verifyAdminSession() {
     if (!sessionStorage.getItem('token')) {
-        window.location.replace('/login.html');
+        window.location.replace('../login.html');
         return false;
     }
 
@@ -134,7 +134,7 @@ async function verifyAdminSession() {
         const user = result.data;
 
         if (user.role !== 'admin') {
-            window.location.replace('/my-loans.html');
+            window.location.replace('../my-loans.html');
             return false;
         }
 
@@ -148,7 +148,7 @@ async function verifyAdminSession() {
         return true;
     } catch (error) {
         if (error.status === 401) {
-            window.location.replace('/login.html');
+            window.location.replace('../login.html');
             return false;
         }
         showBanner('error', error.message || 'Không kiểm tra được phiên đăng nhập.');
@@ -187,7 +187,7 @@ async function loadLoans() {
         renderPagination(meta);
     } catch (error) {
         if (error.status === 401) {
-            window.location.replace('/login.html');
+            window.location.replace('../login.html');
             return;
         }
         showBanner('error', error.message || 'Không tải được danh sách phiếu mượn.');
@@ -613,7 +613,7 @@ btnNextPage.addEventListener('click', function () {
 
 function handleLogout() {
     sessionStorage.removeItem('token');
-    window.location.replace('/login.html');
+    window.location.replace('../login.html');
 }
 
 document.getElementById('btn-sidebar-logout').addEventListener('click', handleLogout);

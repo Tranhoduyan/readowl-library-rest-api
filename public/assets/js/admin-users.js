@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    CẤU HÌNH MENU SIDEBAR QUẢN TRỊ (CHỈ GỒM CÁC CHỨC NĂNG TRONG DỰ ÁN)
    ========================================================================== */
 const ADMIN_SIDEBAR_ITEMS = [
@@ -140,7 +140,7 @@ function hideBanner() {
    ========================================================================== */
 async function verifyAdminSession() {
     if (!sessionStorage.getItem('token')) {
-        window.location.replace('/login.html');
+        window.location.replace('../login.html');
         return false;
     }
 
@@ -150,7 +150,7 @@ async function verifyAdminSession() {
 
         // Nếu là độc giả (Member), chuyển thẳng về giao diện thư viện mượn sách
         if (user.role !== 'admin') {
-            window.location.replace('/my-loans.html');
+            window.location.replace('../my-loans.html');
             return false;
         }
 
@@ -164,7 +164,7 @@ async function verifyAdminSession() {
         return true;
     } catch (error) {
         if (error.status === 401) {
-            window.location.replace('/login.html');
+            window.location.replace('../login.html');
             return false;
         }
         showBanner('error', error.message || 'Không kiểm tra được phiên đăng nhập.');
@@ -205,7 +205,7 @@ async function loadUsers() {
         renderPagination(meta);
     } catch (error) {
         if (error.status === 401) {
-            window.location.replace('/login.html');
+            window.location.replace('../login.html');
             return;
         }
         showBanner('error', error.message || 'Không tải được danh sách độc giả.');
@@ -440,7 +440,7 @@ async function openUserDetailModal(userId) {
         detailModalInstance.show();
     } catch (error) {
         if (error.status === 401) {
-            window.location.replace('/login.html');
+            window.location.replace('../login.html');
             return;
         }
         showBanner('error', error.message || 'Không tải được hồ sơ độc giả.');
@@ -521,7 +521,7 @@ document.getElementById('btn-confirm-submit').addEventListener('click', async fu
             confirmModalInstance.hide();
         }
         if (error.status === 401) {
-            window.location.replace('/login.html');
+            window.location.replace('../login.html');
             return;
         }
         showBanner('error', error.message || 'Không thể thực hiện thao tác.');
@@ -605,7 +605,7 @@ btnNextPage.addEventListener('click', function () {
 
 function handleLogout() {
     sessionStorage.removeItem('token');
-    window.location.replace('/login.html');
+    window.location.replace('../login.html');
 }
 
 document.getElementById('btn-sidebar-logout').addEventListener('click', handleLogout);
