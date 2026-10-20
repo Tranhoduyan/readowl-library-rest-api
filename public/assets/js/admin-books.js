@@ -1,4 +1,4 @@
-﻿const appWrapper = document.getElementById('app-wrapper');
+const appWrapper = document.getElementById('app-wrapper');
 const btnEdgeToggle = document.getElementById('btn-edge-toggle');
 const edgeToggleIcon = document.getElementById('edge-toggle-icon');
 const btnHamburgerToggle = document.getElementById('btn-hamburger-toggle');
@@ -117,7 +117,7 @@ function renderBooksTable() {
 
         const btnEdit = document.createElement('button');
         btnEdit.type = 'button';
-        btnEdit.className = 'btn btn-sm btn-outline-purple';
+        btnEdit.className = 'btn btn-sm btn-purple text-white';
         btnEdit.textContent = 'Sửa';
         btnEdit.addEventListener('click', function () {
             openBookModal(b);
@@ -125,7 +125,7 @@ function renderBooksTable() {
 
         const btnDel = document.createElement('button');
         btnDel.type = 'button';
-        btnDel.className = 'btn btn-sm btn-outline-danger';
+        btnDel.className = 'btn btn-sm btn-danger text-white';
         btnDel.textContent = 'Xóa / Ngừng';
         btnDel.addEventListener('click', function () {
             deleteOrDeactivateBook(b);

@@ -325,12 +325,43 @@
         });
     }
 
+    function initResponsiveSidebar() {
+        const shell = document.getElementById('app-wrapper') || document.getElementById('readowl-shell');
+        if (!shell) return;
+
+        function checkMobileCollapse() {
+            if (window.innerWidth <= 991.98) {
+                if (!shell.classList.contains('sidebar-collapsed')) {
+                    shell.classList.add('sidebar-collapsed');
+                    const icon = document.getElementById('edge-toggle-icon');
+                    if (icon) icon.className = 'bi bi-chevron-right';
+                }
+            }
+        }
+        checkMobileCollapse();
+
+        // Tao backdrop dong sidebar tren thiet bi di dong
+        let backdrop = document.getElementById('mobile-sidebar-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.id = 'mobile-sidebar-backdrop';
+            backdrop.className = 'sidebar-mobile-backdrop';
+            document.body.appendChild(backdrop);
+            backdrop.addEventListener('click', () => {
+                shell.classList.add('sidebar-collapsed');
+                const icon = document.getElementById('edge-toggle-icon');
+                if (icon) icon.className = 'bi bi-chevron-right';
+            });
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         fixRootRelativeLinks(document);
         if (PATHS.publicBase && typeof MutationObserver !== 'undefined') {
             const obs = new MutationObserver(() => fixRootRelativeLinks(document));
             obs.observe(document.body, { childList: true, subtree: true });
         }
+        initResponsiveSidebar();
     });
 
     window.apiFetch = apiFetch;

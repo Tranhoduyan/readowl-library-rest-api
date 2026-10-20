@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    CẤU HÌNH MENU SIDEBAR QUẢN TRỊ (CHỈ GỒM CÁC CHỨC NĂNG TRONG DỰ ÁN)
    ========================================================================== */
 const ADMIN_SIDEBAR_ITEMS = [
@@ -298,7 +298,7 @@ function renderUsersTable(users) {
         // Nút Chi tiết
         const btnDetail = document.createElement('button');
         btnDetail.type = 'button';
-        btnDetail.className = 'btn btn-sm btn-outline-primary';
+        btnDetail.className = 'btn btn-sm btn-primary text-white';
         btnDetail.title = 'Xem chi tiết & lịch sử mượn';
         btnDetail.textContent = 'Chi tiết';
         btnDetail.addEventListener('click', function () {
@@ -308,7 +308,7 @@ function renderUsersTable(users) {
         // Nút Khóa / Mở khóa
         const btnToggle = document.createElement('button');
         btnToggle.type = 'button';
-        btnToggle.className = 'btn btn-sm ' + (isActive ? 'btn-outline-warning text-dark' : 'btn-outline-success');
+        btnToggle.className = 'btn btn-sm text-white ' + (isActive ? 'btn-warning' : 'btn-success');
         btnToggle.textContent = isActive ? 'Khóa' : 'Mở khóa';
         btnToggle.addEventListener('click', function () {
             openActionConfirmModal('toggle', user);
@@ -317,7 +317,7 @@ function renderUsersTable(users) {
         // Nút Xóa User
         const btnDelete = document.createElement('button');
         btnDelete.type = 'button';
-        btnDelete.className = 'btn btn-sm btn-outline-danger';
+        btnDelete.className = 'btn btn-sm btn-danger text-white';
         btnDelete.title = 'Xóa tài khoản độc giả';
         btnDelete.textContent = 'Xóa';
         btnDelete.addEventListener('click', function () {

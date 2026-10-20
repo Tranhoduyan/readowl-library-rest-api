@@ -370,7 +370,7 @@ function renderLoansTable(loans) {
         if (loan.status === 'pending') {
             const btnCancel = document.createElement('button');
             btnCancel.type = 'button';
-            btnCancel.className = 'btn btn-sm btn-outline-danger';
+            btnCancel.className = 'btn btn-sm btn-danger text-white';
             btnCancel.textContent = 'Hủy yêu cầu';
             btnCancel.addEventListener('click', function () {
                 cancelPendingLoan(loan.id);

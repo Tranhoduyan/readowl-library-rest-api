@@ -1,4 +1,4 @@
-﻿const ADMIN_SIDEBAR_ITEMS = [
+const ADMIN_SIDEBAR_ITEMS = [
     {
         icon: 'bi-grid-1x2-fill',
         title: 'Tổng quan (Dashboard)',
@@ -301,7 +301,7 @@ function renderLoansTable(loans) {
 
         const btnDetail = document.createElement('button');
         btnDetail.type = 'button';
-        btnDetail.className = 'btn btn-sm btn-outline-secondary';
+        btnDetail.className = 'btn btn-sm btn-primary text-white';
         btnDetail.textContent = 'Chi tiết';
         btnDetail.addEventListener('click', function () {
             openLoanDetailModal(loan.id);
@@ -313,7 +313,7 @@ function renderLoansTable(loans) {
         if (links.approve || loan.status === 'pending') {
             const btnApprove = document.createElement('button');
             btnApprove.type = 'button';
-            btnApprove.className = 'btn btn-sm btn-success';
+            btnApprove.className = 'btn btn-sm btn-success text-white';
             btnApprove.textContent = 'Giao sách';
             btnApprove.addEventListener('click', function () {
                 openConfirmLoanAction('borrowed', loan);
@@ -324,7 +324,7 @@ function renderLoansTable(loans) {
         if (links.reject || loan.status === 'pending') {
             const btnReject = document.createElement('button');
             btnReject.type = 'button';
-            btnReject.className = 'btn btn-sm btn-outline-danger';
+            btnReject.className = 'btn btn-sm btn-danger text-white';
             btnReject.textContent = 'Từ chối';
             btnReject.addEventListener('click', function () {
                 openRejectLoanModal(loan);
@@ -335,7 +335,7 @@ function renderLoansTable(loans) {
         if (links.return || loan.status === 'borrowed') {
             const btnReturn = document.createElement('button');
             btnReturn.type = 'button';
-            btnReturn.className = 'btn btn-sm btn-primary';
+            btnReturn.className = 'btn btn-sm btn-primary text-white';
             btnReturn.textContent = 'Nhận trả';
             btnReturn.addEventListener('click', function () {
                 openConfirmLoanAction('returned', loan);
